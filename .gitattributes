@@ -1,0 +1,3 @@
+# Force Copilot to recognize my code as C, not C++.
+vectors.h linguist-language=C
+sorting.h linguist-language=C
