@@ -54,19 +54,6 @@
 
 #include <stdlib.h>
 
-// Disable C++ name mangling
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
-/* Cast from one pointer type to another, necessary for C++ compatibility */
-#ifdef __cplusplus
-    #define cast(vec, var) (reinterpret_cast<decltype(vec)>(var))
-#else 
-    #define cast(vec, var) ((void *)(var))
-#endif
-
 /* These two macros were created solely to improve code readability.
  * Example:
  * Using 
@@ -94,14 +81,14 @@ typedef struct v_info {
  * In case of malloc failure, the vector is left unchanged
  * (Should not be used directly by the user)
  */
-#define _v_alloc_(vec) if(vec == NULL) { \
+#define _v_alloc_(vec) if(vec == NULL) {                                                \
     v_info *_raw = (v_info *) malloc(sizeof(v_info) + sizeof(*vec) * V_START_CAPACITY); \
-    if (_raw != NULL) { \
-        _raw->capacity = V_START_CAPACITY; \
-        _raw->size = 0; \
-        vec = cast(vec, _raw + 1); \
-    } \
-} \
+    if (_raw != NULL) {                                                                 \
+        _raw->capacity = V_START_CAPACITY;                                              \
+        _raw->size = 0;                                                                 \
+        vec = (void *)(_raw + 1);                                                       \
+    }                                                                                   \
+}                                                                                       \
 
 /* Frees the allocated memory and sets the vector pointer to NULL
  */
@@ -125,89 +112,84 @@ typedef struct v_info {
  * In case of realloc failure, the vector is left unchanged
  * (Should not be used directly by the user)
  */
-#define _v_double_capacity_(vec) if(vec != NULL) { \
+#define _v_double_capacity_(vec) if(vec != NULL) {                                                                     \
     v_info *_raw = (v_info*) realloc((void *) _v_raw_info_(vec), sizeof(v_info) + sizeof(*vec) * v_capacity(vec) * 2); \
-    if (_raw != NULL) { \
-        _raw->capacity *= 2; \
-        vec = cast(vec, _raw + 1); \
-    } \
-} \
+    if (_raw != NULL) {                                                                                                \
+        _raw->capacity *= 2;                                                                                           \
+        vec = (void *)(_raw + 1);                                                                                      \
+    }                                                                                                                  \
+}                                                                                                                      \
 
 /* Adds an element to the back of the vector. If the vector is not allocated, 
  * memory will be allocated. If the vector does not have enough space, it will reallocate 
  * the vector, doubling its capacity. If allocation or reallocation fail, the element will
  * not be added.
  */
-#define v_push_back(vec, value) \
-    if (vec == NULL) {_v_alloc_(vec);} \
-    if (v_capacity(vec) - v_size(vec) == 0) { \
-        _v_double_capacity_(vec); \
-    } \
-    if (v_capacity(vec) - v_size(vec) != 0) { \
+#define v_push_back(vec, value)                 \
+    if (vec == NULL) {_v_alloc_(vec);}          \
+    if (v_capacity(vec) - v_size(vec) == 0) {   \
+        _v_double_capacity_(vec);               \
+    }                                           \
+    if (v_capacity(vec) - v_size(vec) != 0) {   \
         vec[_v_raw_info_(vec)->size++] = value; \
-    } \
+    }                                           \
 
 /* Removes the last element from the vector 
  */
-#define v_pop_back(vec) \
+#define v_pop_back(vec)                 \
     if ((vec != NULL) && v_size(vec)) { \
-        _v_raw_info_(vec)->size -= 1; \
-    } \
+        _v_raw_info_(vec)->size -= 1;   \
+    }                                   \
 
 /* Shrinks the vector's capacity to fit it's current size
  * In case of realloc failure, the vector is left unchanged
  */
-#define v_shrink_to_fit(vec) \
-    if (vec != NULL) { \
+#define v_shrink_to_fit(vec)                                                                                      \
+    if (vec != NULL) {                                                                                            \
         v_info *_raw = (v_info*) realloc((void *)_v_raw_info_(vec), v_size(vec) * sizeof(*vec) + sizeof(v_info)); \
-        if (_raw != NULL) { \
-            /* capacity = size */ \
-            _v_raw_info_(vec)->capacity = _v_raw_info_(vec)->size; \
-            vec = cast(vec, _raw + 1); \
-        } \
-    } \
+        if (_raw != NULL) {                                                                                       \
+            /* capacity = size */                                                                                 \
+            _v_raw_info_(vec)->capacity = _v_raw_info_(vec)->size;                                                \
+            vec = (void *)(_raw + 1);                                                                             \
+        }                                                                                                         \
+    }                                                                                                             \
 
 /* Inserts an element at a specified index. It checks whether the index is valid (i.e., within range).
  * 'i' should be a size_t variable.
  * 'value' should be of the correct type, as this macro will not perform a cast, so the user is responsible
  * for ensuring the value is of the correct type.
  */
-#define v_insert(vec, i, value) \
-    if (vec != NULL) { \
-        if (((i) >= 0) && ((i) < v_size(vec))) { \
-            if (v_capacity(vec) - v_size(vec) == 0) { \
-                _v_double_capacity_(vec); \
-            } \
-            if (v_capacity(vec) - v_size(vec) != 0) { \
-                for (size_t j = v_size(vec) - 1; j >= i; j--) { \
-                    vec[j+1] = vec[j]; \
-                } \
-                vec[i] = value; \
-                _v_raw_info_(vec)->size++; \
-            } \
-        } \
-    } \
+#define v_insert(vec, i, value)                                  \
+    if (vec != NULL) {                                           \
+        if (((i) >= 0) && ((i) < v_size(vec))) {                 \
+            if (v_capacity(vec) - v_size(vec) == 0) {            \
+                _v_double_capacity_(vec);                        \
+            }                                                    \
+            if (v_capacity(vec) - v_size(vec) != 0) {            \
+                for (size_t j = v_size(vec) - 1; j >= i; j--) {  \
+                    vec[j+1] = vec[j];                           \
+                }                                                \
+                vec[i] = value;                                  \
+                _v_raw_info_(vec)->size++;                       \
+            }                                                    \
+        }                                                        \
+    }                                                            \
 
 /* removes an element from a specified index. It checks wheater the index is valid (i.e., whitin range)
  */
-#define v_remove(vec, i) \
-    if((vec != NULL) && v_size(vec)) { \
-        if (((i) >= 0) && ((i) < v_size(vec))) { \
+#define v_remove(vec, i)                                   \
+    if((vec != NULL) && v_size(vec)) {                     \
+        if (((i) >= 0) && ((i) < v_size(vec))) {           \
             for(size_t j = i + 1; j <= v_size(vec); j++) { \
-                vec[j - 1] = vec[j]; \
-            } \
-            _v_raw_info_(vec)->size--; \
-        } \
-    } \
+                vec[j - 1] = vec[j];                       \
+            }                                              \
+            _v_raw_info_(vec)->size--;                     \
+        }                                                  \
+    }                                                      \
 
 /* removes the first element of the vector.
  */
 #define v_pop_front(vec) v_remove(vec, 0)
-
-// Disable C++ name mangling
-#ifdef __cplusplus
-};
-#endif
 
 #endif
 
