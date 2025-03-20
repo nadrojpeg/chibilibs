@@ -1,7 +1,8 @@
 # **_chibilibs_**
 ![Work in Progress](https://img.shields.io/badge/status-Work_in_Progress-yellow)  
 **_chibilibs_** is a work-in-progress project consisting of small, minimalistic libraries written in C. It’s a personal project that I work on while studying and learning the C language, as well as topics related to algorithms and data structures. 
-As I continue to develop my understanding of C and related concepts, this project will grow with new libraries and improvements.
+As I continue to develop my understanding of C and related concepts, this project will grow with new libraries and improvements.  
+The name **_chibilibs_** is derived from the Japanese word "_chibi_" (ちび), which means "small" or "tiny". This reflects the project's focus on creating small and minimalistic libraries.
 
 #### <u>_vectors.h_</u>: a type-generic dynamic array library
 ![Testing](https://img.shields.io/badge/status-Testing-purple)  
