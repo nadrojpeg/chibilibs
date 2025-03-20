@@ -1,6 +1,6 @@
 /* vectors.h
  *
- * Copyright (c) 2024 [Paolo Giordano]
+ * Copyright (c) 2025 Paolo Giordano
  * Licensed under the MIT License. See the LICENSE at the end of this file for details.
  * 
  * A single-header, fast and lightweight macro-based implementation of dynamic arrays in C. 
@@ -8,7 +8,7 @@
  * dynamic arrays.
  * This data structure is implemented by allocating memory for metadata 
  * about the vector immediately before the address of the first element.
- * This approach is inspired by the work of Sean T. Barrett, author of "stb_ds.h".
+ * This approach is inspired by the work of Sean T. Barrett (https://www.nothings.org/), author of "stb_ds.h".
  * 
  * The underlying data structure used by the vector is of the following type:
  * struct { 
@@ -214,7 +214,7 @@ typedef struct v_info {
 /* 
 MIT License
 
-Copyright (c) [2024] [Paolo Giordano]
+Copyright (c) 2025 Paolo Giordano
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
