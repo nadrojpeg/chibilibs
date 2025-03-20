@@ -3,7 +3,7 @@
  * Copyright (c) 2025 Paolo Giordano
  * Licensed under the MIT License. See the LICENSE at the end of this file for details
  *
- * This library provides means to sort array of generic data types in C.
+ * This library provides means to sort an array of generic data types in C.
  */
 #ifndef SORTING_H
 #define SORTING_H
