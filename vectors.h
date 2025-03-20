@@ -3,7 +3,7 @@
  * Copyright (c) 2025 Paolo Giordano
  * Licensed under the MIT License. See the LICENSE at the end of this file for details.
  * 
- * A single-header, fast and lightweight macro-based implementation of dynamic arrays in C. 
+ * A single-header, fast and lightweight macro-based implementation of dynamic arrays written in C. 
  * Provides C++-like (std::vector) functionality for creating and manipulating 
  * dynamic arrays.
  * This data structure is implemented by allocating memory for metadata 
