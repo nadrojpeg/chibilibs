@@ -125,14 +125,14 @@ typedef struct v_info {
  * the vector, doubling its capacity. If allocation or reallocation fail, the element will
  * not be added.
  */
-#define v_push_back(vec, value)                 \
-    if (vec == NULL) {_v_alloc_(vec);}          \
-    if (v_capacity(vec) - v_size(vec) == 0) {   \
-        _v_double_capacity_(vec);               \
-    }                                           \
-    if (v_capacity(vec) - v_size(vec) != 0) {   \
-        vec[_v_raw_info_(vec)->size++] = value; \
-    }                                           \
+#define v_push_back(vec, value)                   \
+    if (vec == NULL) {_v_alloc_(vec);}            \
+    if (v_capacity(vec) - v_size(vec) == 0) {     \
+        _v_double_capacity_(vec);                 \
+    }                                             \
+    if (v_capacity(vec) - v_size(vec) != 0) {     \
+        (vec)[_v_raw_info_(vec)->size++] = value; \
+    }                                             \
 
 /* Removes the last element from the vector 
  */
@@ -159,33 +159,33 @@ typedef struct v_info {
  * 'value' should be of the correct type, as this macro will not perform a cast, so the user is responsible
  * for ensuring the value is of the correct type.
  */
-#define v_insert(vec, i, value)                                  \
-    if (vec != NULL) {                                           \
-        if (((i) >= 0) && ((i) < v_size(vec))) {                 \
-            if (v_capacity(vec) - v_size(vec) == 0) {            \
-                _v_double_capacity_(vec);                        \
-            }                                                    \
-            if (v_capacity(vec) - v_size(vec) != 0) {            \
-                for (size_t j = v_size(vec) - 1; j >= i; j--) {  \
-                    vec[j+1] = vec[j];                           \
-                }                                                \
-                vec[i] = value;                                  \
-                _v_raw_info_(vec)->size++;                       \
-            }                                                    \
-        }                                                        \
-    }                                                            \
+#define v_insert(vec, i, value)                                      \
+    if (vec != NULL) {                                               \
+        if (((i) >= 0) && ((i) < v_size(vec))) {                     \
+            if (v_capacity(vec) - v_size(vec) == 0) {                \
+                _v_double_capacity_(vec);                            \
+            }                                                        \
+            if (v_capacity(vec) - v_size(vec) != 0) {                \
+                for (size_t j = v_size(vec) - 1; j >= i; j--) {      \
+                    (vec)[j+1] = (vec)[j];                           \
+                }                                                    \
+                (vec)[i] = value;                                    \
+                _v_raw_info_(vec)->size++;                           \
+            }                                                        \
+        }                                                            \
+    }                                                                \
 
 /* removes an element from a specified index. It checks wheater the index is valid (i.e., whitin range)
  */
-#define v_remove(vec, i)                                   \
-    if((vec != NULL) && v_size(vec)) {                     \
-        if (((i) >= 0) && ((i) < v_size(vec))) {           \
-            for(size_t j = i + 1; j <= v_size(vec); j++) { \
-                vec[j - 1] = vec[j];                       \
-            }                                              \
-            _v_raw_info_(vec)->size--;                     \
-        }                                                  \
-    }                                                      \
+#define v_remove(vec, i)                                       \
+    if((vec != NULL) && v_size(vec)) {                         \
+        if (((i) >= 0) && ((i) < v_size(vec))) {               \
+            for(size_t j = i + 1; j <= v_size(vec); j++) {     \
+                (vec)[j - 1] = (vec)[j];                       \
+            }                                                  \
+            _v_raw_info_(vec)->size--;                         \
+        }                                                      \
+    }                                                          \
 
 /* removes the first element of the vector.
  */
