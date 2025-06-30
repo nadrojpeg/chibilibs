@@ -145,7 +145,7 @@ typedef struct v__metadata_t {
     size_t shrink_capacity = sizeof(v__metadata_t) + v_size(vec) * sizeof(*(vec));                              \
     v__metadata_t *metadata = (v__metadata_t *) realloc((void *) v__get_metadata(vec), shrink_capacity);        \
     if (metadata != NULL) {                                                                                     \
-        metadata->capacity = metadata->size;            			                                            \
+        metadata->capacity = metadata->size;                                                                    \
         (vec) = v__cast(vec, (metadata + 1));                                                                   \
     }                                                                                                           \
   } while (0)                                                                                                   \
