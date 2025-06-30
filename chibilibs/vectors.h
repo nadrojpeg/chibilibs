@@ -145,7 +145,7 @@ typedef struct v__metadata_t {
     size_t shrink_capacity = sizeof(v__metadata_t) + v_size(vec) * sizeof(*(vec));                              \
     v__metadata_t *metadata = (v__metadata_t *) realloc((void *) v__get_metadata(vec), shrink_capacity);        \
     if (metadata != NULL) {                                                                                     \
-        metadata->capacity = metadata->size;            			                                            \
+        metadata->capacity = metadata->size;                                                                    \
         (vec) = v__cast(vec, (metadata + 1));                                                                   \
     }                                                                                                           \
   } while (0)                                                                                                   \
@@ -158,24 +158,24 @@ typedef struct v__metadata_t {
 */
 #define v_insert(vec, i, val) do {                             \
     v__alloc(vec);                                             \
-    if (v_capacity(vec) - v_size(vec) == 0) {		           \
-      v__double_capacity(vec);				                   \
-    }							                               \
-    for (size_t j = v_size(vec); j > i; j--) {		           \
-      (vec)[j] = (vec)[j - 1];				                   \
-    }							                               \
-    (vec)[i] = (val);					                       \
-    v__get_metadata(vec)->size++;			                   \
+    if (v_capacity(vec) - v_size(vec) == 0) {                  \
+      v__double_capacity(vec);                                 \
+    }                                                          \
+    for (size_t j = v_size(vec); j > i; j--) {                 \
+      (vec)[j] = (vec)[j - 1];                                 \
+    }                                                          \
+    (vec)[i] = (val);                                          \
+    v__get_metadata(vec)->size++;                              \
   } while (0)                                                  \
 
 /* Removes an element from a specified index.
  * Does not check whether vec is NULL or whether the index is in range.
 */
-#define v_remove(vec, i) do {				               \
-    for(size_t j = i + 1; j < v_size(vec); j++) {	       \
-      (vec)[j - 1] = (vec)[j];				               \
-    }							                           \
-    v__get_metadata(vec)->size--;			               \
+#define v_remove(vec, i) do {                              \
+    for(size_t j = i + 1; j < v_size(vec); j++) {          \
+      (vec)[j - 1] = (vec)[j];                             \
+    }                                                      \
+    v__get_metadata(vec)->size--;                          \
   } while (0)                                              \
 
 /* Removes the first element of the vector.
