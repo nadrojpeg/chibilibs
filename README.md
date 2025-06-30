@@ -5,7 +5,7 @@ As I continue to develop my understanding of C and related concepts, this projec
 The name **_chibilibs_** is derived from the Japanese word "_chibi_" (ちび), which means "small" or "tiny". This reflects the project's focus on creating small and minimalistic libraries.
 
 #### <u>_vectors.h_</u>: a type-generic dynamic array library
-![Testing](https://img.shields.io/badge/status-Testing-purple)  
+![Testing](https://img.shields.io/badge/status-Testing-yellow)  
 A single-header, fast and lightweight macro-based implementation of dynamic arrays in C.  
 Provides _C++_-like (_std::vector_) functionality for creating and manipulating dynamic arrays.
 

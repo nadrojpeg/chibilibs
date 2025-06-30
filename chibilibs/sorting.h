@@ -7,91 +7,109 @@
  */
 #ifndef SORTING_H
 #define SORTING_H
+#define SORTING_IMPLEMENTATIONS
 
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdarg.h>
 #include <stdint.h>
 
-/* Copy function, substitution of memcpy.
+#ifdef __cplusplus
+extern "C" 
+{
+#endif
+
+/* Copy function.
  * Arguments:
- * - sizeof the destination and source array
  * - destination array
  * - source array
- * Outputs:
- * - no output, the vector are simply copied
+ * - size of the destination and source array
  */
-static inline void copy(char *dest, char *source, size_t dim)
-{
-  for(size_t i = 0; i < dim; ++i)
-    {
-      dest[i] = source[i];
-    }
-}
+static inline void s__copy(char *dest, char *source, size_t dim);
 
 /* Insertion Sort.
  * Arguments:
- * - size of vector type
  * - the vector to sort
  * - the dimension of the vector
+ * - size of vector type
  * - a pointer to an ordering function
- * Output:
- * - no output, the vector is sorted in loco
+ * Return:
+ * - the length of the array on success or -1 on failure
  */
-void insertion_sort(size_t size_of,
-		    void *input,
-		    size_t dim,
-		    bool (*order)(const void *lhs, const void *rhs) )
-{
-  char *start = (char *)input;
-  for( size_t i = 1; i < dim; ++i)
-    {
-      char *key = (char *)malloc(size_of);
-      copy(key, start + i * size_of, size_of);
-      size_t j = i - 1;
-      while( (j != SIZE_MAX) && (*order)(key, start + j * size_of) )
-	{
-	  copy(start + (j + 1)*size_of, start + j * size_of, size_of);
-	  --j;
-	}
-      copy(start + (j + 1)*size_of, key, size_of);
-    }
-}
+int64_t s_insertion(void *input, size_t dim, size_t size, bool (*order)(const void *lhs, const void *rhs));
 
 /* Selection Sort
  * Arguments:
- * - size of vector type
- * - the vector
+ * - the vector to sort
  * - the dimension of the vector
+ * - size of vector type
  * - a pointer to an ordering function
- * Output:
- * - no output, the vector is sorted in loco
+ * Return:
+ * - the length of the array on success or -1 on failure
  */
-void selection_sort(size_t size_of,
-		    void *input,
-		    size_t dim,
-		    bool (*order)(const void *lhs, const void *rhs))
-{
-  char *start = (char *)input;
-  for (size_t i = 0; i < dim - 1; ++i)
-    {
-      size_t sel_idx = i;           // index of the selected item
-      for (size_t j = i + 1; j < dim; ++j)
-	{
-	  if ( order(start + size_of * j, start + size_of * sel_idx) )
-	    {
-	      sel_idx = j;
-	    }
-	}
-      if ( sel_idx != i)
-	{
-	  char *temp = (char *)malloc(size_of);
-	  copy(temp, start + i * size_of, size_of);
-	  copy(start + i * size_of, start + sel_idx * size_of, size_of);
-	  copy(start + sel_idx * size_of, temp, size_of);
-	}
-    }
+int64_t s_selection(void *input, size_t dim, size_t size, bool (*order)(const void *lhs, const void *rhs));
+
+
+#ifdef SORTING_IMPLEMENTATIONS
+
+static inline void s__copy(char *dest, char *source, size_t dim) {
+  for(size_t i = 0; i < dim; ++i) {
+      dest[i] = source[i];
+  }
 }
+
+// for increasing order, lhs < rhs. For decreasing order rhs < lhs
+int64_t s_insertion(void *input, size_t dim, size_t size, bool (*order)(const void *lhs, const void *rhs)) {
+  char *start = (char *)input;
+  char *key = (char *)malloc(size);
+  if (key == NULL) {
+	return -1;
+  }
+  for( size_t i = 1; i < dim; ++i) {
+      s__copy(key, start + i * size, size);
+      size_t j = i - 1;
+      while( (j != SIZE_MAX) && (*order)(key, start + j * size) ) {
+		s__copy(start + (j + 1)*size, start + j * size, size);
+		--j;
+	  }
+      s__copy(start + (j + 1)*size, key, size);
+  }
+
+  free(key);
+  return (int64_t) dim;
+}
+
+// for increasing order, lhs < rhs. For decreasing order rhs < lhs
+int64_t s_selection(void *input, size_t dim, size_t size, bool (*order)(const void *lhs, const void *rhs)) {
+  char *start = (char *)input;
+
+  char *temp = (char *) malloc(size);
+  if (temp == NULL) {
+	return -1;
+  }
+
+  for (size_t i = 0; i < dim - 1; ++i) {
+	  size_t min_idx = i;
+	  for (size_t j = i + 1; j < dim; j++) {
+		if (order(start + j * size, start + min_idx * size)) {
+			min_idx = j;
+		}
+	  }
+	  s__copy(temp, start + min_idx * size, size);
+	  s__copy(start + min_idx * size, start + i * size, size);
+	  s__copy(start + i * size, temp, size);
+
+  }
+
+  free(temp);
+  return (int64_t) dim;
+}
+
+#endif
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 
