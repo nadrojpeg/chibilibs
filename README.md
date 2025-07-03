@@ -16,6 +16,6 @@ The entire library is type-generic, which means you can sort all types of data b
 callback function to order those data types.
 
 #### <u>_hashint.h_</u>: a hash map library with integer keys and type-generic values
-![Testing](https://img.shields.io/badge/status-Testing-red)  
+![Work in Progress](https://img.shields.io/badge/status-Testing-red)  
 A single-header, macro-based implementation of a hash map in C.   
 Supports integer keys with generic value storage, enabling flexible key-value mapping.
