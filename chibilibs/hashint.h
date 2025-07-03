@@ -225,7 +225,6 @@ inline bool hashi__get_slot(void *table, size_t val_size, uint64_t key, uint64_t
 }
 
 inline void *hashi_get(void *table, size_t val_size, uint64_t key) {
-    if (key == HASHI_EMPTY) {key = 0;}
     uint64_t slot;
     if (hashi__get_slot(table, val_size, key, &slot)) {
         return (void *)((char *)(table) + slot * val_size);
