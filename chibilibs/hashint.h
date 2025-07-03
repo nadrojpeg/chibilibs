@@ -216,15 +216,12 @@ inline bool hashi__get_slot(void *table, size_t val_size, uint64_t key, uint64_t
     if (key == HASHI_EMPTY) {key = 0;}
     size_t idx = hashi__hash(key) % hashi_capacity(table);
     uint64_t *base = hashi__get_keys(table);
-    while (base[idx] != HASHI_EMPTY) {
-        if (base[idx] == key) {
-            *slot = idx;
-            return true;
-        }
+    while (base[idx] != HASHI_EMPTY && base[idx] != key) {
         idx = (idx + 1) & (hashi_capacity(table) - 1);
     }
+    *slot = idx;
 
-    return false;
+    return base[idx] == key;
 }
 
 inline void *hashi_get(void *table, size_t val_size, uint64_t key) {
@@ -247,16 +244,14 @@ inline bool hashi_del(void *table, size_t val_size, uint64_t key) {
         uint64_t *base = hashi__get_keys(table);
         uint64_t new_idx;
         uint64_t new_key;
-        bool done = false;
-        while (!done) {
+        for(;;) {
             base[idx] = HASHI_EMPTY;
             new_idx = idx;
             do {
                 new_idx = (new_idx + 1) & (hashi_capacity(table) - 1);
                 new_key = base[new_idx];
                 if (new_key == HASHI_EMPTY) {
-                    done = true;
-                    break;
+                    return true;
                 }
             } while (hashi__hash_inv(table, new_key, new_idx) < hashi__hash_inv(table, new_key, idx));
             base[idx] = new_key;
