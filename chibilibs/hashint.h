@@ -190,12 +190,14 @@ inline uint64_t hashi__hash(uint64_t k) {
     uint64_t *base = hashi__get_keys(table);                                 \
     size_t m = hashi_capacity(table);                                        \
     size_t idx = hashi__hash(k) & (m - 1);                                   \
-    while (base[idx] != HASHI_EMPTY) {                                       \
+    while (base[idx] != HASHI_EMPTY && base[idx] != k) {                     \
         idx = (idx + 1) & (m - 1);                                           \
+    }                                                                        \
+    if (base[idx] == HASHI_EMPTY) {                                          \
+        hashi__get_metadata(table)->size++;                                  \
     }                                                                        \
     base[idx] = (k);                                                         \
     table[idx] = (val);                                                      \
-    hashi__get_metadata(table)->size++;                                      \
 } while(0)                                                                   \
 
 
