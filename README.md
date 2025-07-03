@@ -1,6 +1,6 @@
 # **_chibilibs_**
 ![Work in Progress](https://img.shields.io/badge/status-Work_in_Progress-yellow)  
-**_chibilibs_** is a work-in-progress project consisting of small, minimalistic libraries written in C. It’s a personal project that I work on while studying and learning the C language, as well as topics related to algorithms and data structures. 
+**_chibilibs_** is a work-in-progress project consisting of small, minimalistic libraries written in C. It’s a personal project that I work on while studying and learning the C language, as well as topics related to algorithms and data structures.
 As I continue to develop my understanding of C and related concepts, this project will grow with new libraries and improvements.  
 The name **_chibilibs_** is derived from the Japanese word "_chibi_" (ちび), which means "small" or "tiny". This reflects the project's focus on creating small and minimalistic libraries.
 
@@ -13,4 +13,9 @@ Provides _C++_-like (_std::vector_) functionality for creating and manipulating 
 ![Work in Progress](https://img.shields.io/badge/status-Work_in_Progress-red)  
 A single-header implementation of a variety of sorting algorithms.  
 The entire library is type-generic, which means you can sort all types of data by implementing a  
-callback function to order those data types. 
+callback function to order those data types.
+
+#### <u>_hashint.h_</u>: a hash map library with integer keys and type-generic values
+![Testing](https://img.shields.io/badge/status-Testing-red)  
+A single-header, macro-based implementation of a hash map in C.   
+Supports integer keys with generic value storage, enabling flexible key-value mapping.

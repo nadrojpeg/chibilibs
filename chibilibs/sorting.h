@@ -1,12 +1,13 @@
-/* sorting.h
+/* sorting.h - Generic sorting algorithms implementation
+ * Part of the chibilibs project (https://github.com/nadrojpeg/chibilibs)
  *
  * Copyright (c) 2025 Paolo Giordano
  * Licensed under the MIT License. See the LICENSE at the end of this file for details
  *
  * This library provides means to sort an array of generic data types in C.
  */
-#ifndef SORTING_H
-#define SORTING_H
+#ifndef CHIBI_SORTING_H
+#define CHIBI_SORTING_H
 #define SORTING_IMPLEMENTATIONS
 
 #include <stdlib.h>
@@ -15,7 +16,7 @@
 #include <stdint.h>
 
 #ifdef __cplusplus
-extern "C" 
+extern "C"
 {
 #endif
 
@@ -113,7 +114,7 @@ int64_t s_selection(void *input, size_t dim, size_t size, bool (*order)(const vo
 
 #endif
 
-/* 
+/*
 MIT License
 
 Copyright (c) 2025 Paolo Giordano
@@ -136,4 +137,3 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-

@@ -1,21 +1,22 @@
-/* vectors.h
+/* vectors.h - Dynamic vectors implementation
+ * Part of the chibilibs project (https://github.com/nadrojpeg/chibilibs)
  *
  * Copyright (c) 2025 Paolo Giordano
  * Licensed under the MIT License. See the LICENSE at the end of this file for details.
- * 
- * A single-header, fast and lightweight macro-based implementation of dynamic arrays written in C. 
- * Provides C++-like (std::vector) functionality for creating and manipulating 
+ *
+ * A single-header, fast and lightweight macro-based implementation of dynamic arrays written in C.
+ * Provides C++-like (std::vector) functionality for creating and manipulating
  * dynamic arrays.
- * This data structure is implemented by allocating memory for metadata 
+ * This data structure is implemented by allocating memory for metadata
  * about the vector immediately before the address of the first element.
  * This approach is inspired by the work of Sean T. Barrett (https://www.nothings.org/), author of "stb_ds.h".
- * 
+ *
  * The underlying data structure used by the vector is of the following type:
- * struct { 
+ * struct {
  *     size_t capacity;
  *     size_t size;
  * }
- * 
+ *
  * The approach of storing metadata before the data array has two key advantages:
  *
  * 1. It encapsulates certain data, preventing the user from directly accessing
@@ -24,30 +25,30 @@
  *
  * 2. It allows the user to access and modify the vector elements using the same syntax as
  *    regular arrays, e.g. "vec[i]".
- * 
+ *
  * Public Macros (to be used by the user):
  * - v_free: frees the vector.
- * - v_capacity: returns the capacity of the vector, which is the maximum number of elements 
+ * - v_capacity: returns the capacity of the vector, which is the maximum number of elements
  *   the vector can hold without needing to reallocate memory.
  * - v_size: returns the size of the vector, which is the number of elements currently held by
  *   the vector.
- * - v_push_back: adds an element to the back of the vector. If the vector is not allocated, 
- *   memory will be allocated. If the vector does not have enough space, it will reallocate 
+ * - v_push_back: adds an element to the back of the vector. If the vector is not allocated,
+ *   memory will be allocated. If the vector does not have enough space, it will reallocate
  *   the vector, doubling its capacity.
  * - v_insert: inserts an element at a specified index.
  * - v_remove: removes an element from a specified index.
  * - v_pop_front: removes the first element of the vector.
  * - v_pop_back: removes the last element of the vector.
  * - v_shrink_to_fit: shrinks the vector's capacity to fit its current size.
- * 
+ *
  * Private Macros (should not be used directly by the user, unless they really want to):
  * - v__alloc: performs the initial allocation.
  * - v__double_capacity: reallocates memory, doubling the vector's capacity.
  * - v__get_metadata: returns a pointer to the vector's metadata.
  */
 
-#ifndef VECTORS_H
-#define VECTORS_H
+#ifndef CHIBI_VECTORS_H
+#define CHIBI_VECTORS_H
 
 #include <stdlib.h>
 
@@ -55,7 +56,7 @@
 
 #ifdef __cplusplus
     #define v__cast(vec, p) reinterpret_cast<decltype(vec)>(p)
-#else 
+#else
     #define v__cast(vec, p) (void *)(p)
 #endif
 
@@ -116,8 +117,8 @@ typedef struct v__metadata_t {
     }                                                                                                   \
   } while (0)                                                                                           \
 
-/* Adds an element to the back of the vector. If the vector is not allocated (vec == NULL), 
- * memory will be allocated. If the vector does not have enough space, it will reallocate 
+/* Adds an element to the back of the vector. If the vector is not allocated (vec == NULL),
+ * memory will be allocated. If the vector does not have enough space, it will reallocate
  * the vector, doubling its capacity. If allocation or reallocation fail, the element will
  * not be added.
 */
@@ -184,7 +185,7 @@ typedef struct v__metadata_t {
 
 #endif
 
-/* 
+/*
 MIT License
 
 Copyright (c) 2025 Paolo Giordano
@@ -207,4 +208,3 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-
