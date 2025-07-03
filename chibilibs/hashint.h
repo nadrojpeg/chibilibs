@@ -104,8 +104,8 @@ typedef struct {
     size_t val_size = sizeof(*(table));                                                                                     \
     size_t size = HASHI_START_CAPACITY * sizeof(uint64_t) + sizeof(hashi__metadata_t) + HASHI_START_CAPACITY * val_size;    \
     uint64_t *base = (uint64_t *) malloc(size);                                                                             \
-    hashi__metadata_t *metadata = (hashi__metadata_t *)(base + HASHI_START_CAPACITY);                                       \
-    if (metadata != NULL) {                                                                                                 \
+    if (base != NULL) {                                                                                                     \
+        hashi__metadata_t *metadata = (hashi__metadata_t *)(base + HASHI_START_CAPACITY);                                   \
         memset(base, 0xFF, HASHI_START_CAPACITY * sizeof(uint64_t));                                                        \
         metadata->size = 0;                                                                                                 \
         metadata->capacity = HASHI_START_CAPACITY;                                                                          \
@@ -166,39 +166,36 @@ inline uint64_t hashi__hash(uint64_t k) {
     if (new_base != NULL) {                                                                                  \
         memset(new_base, 0xFF, new_capacity * sizeof(uint64_t));                                             \
         hashi__metadata_t *metadata = (hashi__metadata_t *)(new_base + new_capacity);                        \
-        if (new_base != NULL) {                                                                              \
-            metadata->size = hashi_size(table);                                                              \
-            metadata->capacity = new_capacity;                                                               \
-            hashi__rehash(table, metadata + 1);                                                              \
-            free(hashi__get_keys(table));                                                                    \
-            table = hashi__cast(metadata + 1, table);                                                        \
-        }                                                                                                    \
+        metadata->size = hashi_size(table);                                                                  \
+        metadata->capacity = new_capacity;                                                                   \
+        hashi__rehash(table, metadata + 1);                                                                  \
+        free(hashi__get_keys(table));                                                                        \
+        table = hashi__cast(metadata + 1, table);                                                            \
     }                                                                                                        \
 } while(0)                                                                                                   \
 
-#define hashi_put(table, key, val) do {                                      \
-    if ((table) == NULL) {                                                   \
-        hashi__alloc(table);                                                 \
-    }                                                                        \
-    if (hashi_size(table) >= (hashi_capacity(table) / 4) * 3) {              \
-        hashi__realloc(table);                                               \
-    }                                                                        \
-    uint64_t k = (uint64_t)(key);                                            \
-    if (k == HASHI_EMPTY) {                                                  \
-        k = 0;                                                               \
-    }                                                                        \
-    uint64_t *base = hashi__get_keys(table);                                 \
-    size_t m = hashi_capacity(table);                                        \
-    size_t idx = hashi__hash(k) & (m - 1);                                   \
-    while (base[idx] != HASHI_EMPTY && base[idx] != k) {                     \
-        idx = (idx + 1) & (m - 1);                                           \
-    }                                                                        \
-    if (base[idx] == HASHI_EMPTY) {                                          \
-        hashi__get_metadata(table)->size++;                                  \
-    }                                                                        \
-    base[idx] = (k);                                                         \
-    table[idx] = (val);                                                      \
-} while(0)                                                                   \
+#define hashi_put(table, key, val) do {                                          \
+    uint64_t k = (uint64_t)(key);                                                \
+    if (k != HASHI_EMPTY) {                                                      \
+        if ((table) == NULL) {                                                   \
+            hashi__alloc(table);                                                 \
+        }                                                                        \
+        if (hashi_size(table) >= (hashi_capacity(table) / 4) * 3) {              \
+            hashi__realloc(table);                                               \
+        }                                                                        \
+        uint64_t *base = hashi__get_keys(table);                                 \
+        size_t m = hashi_capacity(table);                                        \
+        size_t idx = hashi__hash(k) & (m - 1);                                   \
+        while (base[idx] != HASHI_EMPTY && base[idx] != k) {                     \
+            idx = (idx + 1) & (m - 1);                                           \
+        }                                                                        \
+        if (base[idx] == HASHI_EMPTY) {                                          \
+            hashi__get_metadata(table)->size++;                                  \
+        }                                                                        \
+        base[idx] = (k);                                                         \
+        table[idx] = (val);                                                      \
+    }                                                                            \
+} while(0)                                                                       \
 
 
 #ifdef __cplusplus
@@ -213,8 +210,8 @@ bool hashi_del(void *table, size_t val_size, uint64_t key);
 
 #ifdef HASHI_IMPLEMENTATIONS
 inline bool hashi__get_slot(void *table, size_t val_size, uint64_t key, uint64_t *slot) {
-    if (key == HASHI_EMPTY) {key = 0;}
-    size_t idx = hashi__hash(key) % hashi_capacity(table);
+    if (key == HASHI_EMPTY) { return false; }
+    size_t idx = hashi__hash(key) & (hashi_capacity(table) - 1);
     uint64_t *base = hashi__get_keys(table);
     while (base[idx] != HASHI_EMPTY && base[idx] != key) {
         idx = (idx + 1) & (hashi_capacity(table) - 1);
@@ -240,6 +237,7 @@ inline uint64_t hashi__hash_inv(void *table, uint64_t key, uint64_t idx) {
 inline bool hashi_del(void *table, size_t val_size, uint64_t key) {
     uint64_t idx;
     if (hashi__get_slot(table, val_size, key, &idx)) {
+        hashi__get_metadata(table)->size--;
         uint64_t *base = hashi__get_keys(table);
         uint64_t new_idx;
         uint64_t new_key;
