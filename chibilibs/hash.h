@@ -246,9 +246,9 @@ static inline void hash__rehash(void *map, void *nmap) {
 
 #define hash__resize(map, ncapacity) do {                                                        \
   size_t val_size = hash__get_info(map)->val_size;                                               \
-  uint8_t *nbase = (uint8_t *) hash__malloc((ncapacity), val_size);	                             \
+  uint8_t *nbase = (uint8_t *) hash__malloc((ncapacity), val_size);	                         \
   if (nbase != 0) {                                                                              \
-    memset(nbase, HASH__FREE, (ncapacity));				                                               \
+    memset(nbase, HASH__FREE, (ncapacity));				                         \
     hash__info_t *info = (hash__info_t *)(nbase + (ncapacity) + sizeof(uint64_t) * (ncapacity)); \
     info->size = hash_size(map);                                                                 \
     info->capacity = (ncapacity);                                                                \
@@ -388,7 +388,7 @@ static inline size_t hash__get_freetombidx(void *map, uint64_t key) {
 */
 #define hash_put(map, key, val) do{                           \
   ticks_t start = prof_get_ticks();                           \
-  if ((map) == NULL) {					                              \
+  if ((map) == NULL) {					      \
     hash__init(map);                                          \
   }                                                           \
   uint64_t k = (key);                                         \
@@ -398,12 +398,12 @@ static inline size_t hash__get_freetombidx(void *map, uint64_t key) {
   uint8_t mask = hash__hash7(hash) | 0x80;                    \
   size_t idx;                                                 \
   if(hash__get_idx(map, k, &idx) == 1) {                      \
-    (map)[idx] = (val);					                              \
+    (map)[idx] = (val);					      \
   } else {                                                    \
     idx = hash__get_freetombidx(map, k);                      \
     meta[idx] = mask;                                         \
     keys[idx] = k;                                            \
-    (map)[idx] = (val);					                              \
+    (map)[idx] = (val);					      \
     hash__get_info(map)->size++;                              \
   }                                                           \
   if(hash_size(map) >= (hash_capacity(map) / 4) * 3) {        \
